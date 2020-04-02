@@ -3,7 +3,7 @@ namespace GoogleTaxonomyHandler;
 
 class TreeChainFactory extends AbstractChainFactory
 {
-    public function build(): Tier
+    protected function build(): Tier
     {
         $result = new Tier(0, '');
         foreach ($this->raw as $line) {
@@ -13,7 +13,7 @@ class TreeChainFactory extends AbstractChainFactory
         return $result->getChild();
     }
 
-    public function cast(Tier $result, int $id, array $tiers)
+    private function cast(Tier $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
             $current = $result;
