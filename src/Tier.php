@@ -3,13 +3,13 @@ namespace GoogleTaxonomyHandler;
 
 class Tier
 {
-    protected $id;
+    private $id;
 
-    protected $name;
+    private $name;
 
-    protected $next;
+    private $next;
 
-    protected $child;
+    private $child;
 
     public function __construct(int $id, string $name)
     {
@@ -25,6 +25,11 @@ class Tier
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function isEqual(int $id): bool
+    {
+        return $id === $this->id;
     }
 
     public function isSame(string $name): bool
@@ -110,5 +115,24 @@ class Tier
         } else {
             $result[] = implode(' ', $parsed);
         }
+    }
+
+    public function find(int $id): ?Tier
+    {
+        return $this->findById($id, $this);
+    }
+
+    private function findById(int $id, Tier $tier): ?Tier
+    {
+        if ($tier->isEqual($id)) {
+            return $tier;
+        }
+        if ($tier->hasChild()) {
+            return $this->findById($id, $tier->getChild());
+        }
+        if ($tier->hasNext()) {
+            return $this->findById($id, $tier->getNext());
+        }
+        return null;
     }
 }
