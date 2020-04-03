@@ -1,13 +1,13 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TreeNodeChainBuilder
+class TierBuilder
 {
     private $loaded = false;
 
     protected $raw = [];
 
-    public function load(array $raw): TreeNodeChainBuilder
+    public function load(array $raw): TierBuilder
     {
         $this->raw = $raw;
         $this->loaded = true;
@@ -15,7 +15,7 @@ class TreeNodeChainBuilder
         return $this;
     }
 
-    public function loadFromFile(string $file): TreeNodeChainBuilder
+    public function loadFromFile(string $file): TierBuilder
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException("file: {$file} was not found");
@@ -31,7 +31,7 @@ class TreeNodeChainBuilder
         return $this->loaded;
     }
 
-    public function build(): TreeNode
+    public function buildTree(): TreeNode
     {
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
@@ -39,12 +39,12 @@ class TreeNodeChainBuilder
         $result = new TreeNode(0, '');
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
-            $this->_build($result, $id, explode(' > ', trim($tiers)));
+            $this->_buildTree($result, $id, explode(' > ', trim($tiers)));
         }
         return $result->getChild();
     }
 
-    private function _build(TreeNode $result, int $id, array $tiers)
+    private function _buildTree(TreeNode $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
             $current = $result;
@@ -52,7 +52,7 @@ class TreeNodeChainBuilder
                 $current = $current->getChild();
                 NEXT:
                 if ($current->isSame($tier)) {
-                    $this->_build($current, $id, $tiers);
+                    $this->_buildTree($current, $id, $tiers);
                 } else {
                     if ($current->hasNext()) {
                         $current = $current->getNext();
@@ -64,9 +64,26 @@ class TreeNodeChainBuilder
             } else {
                 $current->setChild(new TreeNode($id, $tier));
                 if ($tiers) {
-                    $this->_build($current->getChild(), $id, $tiers);
+                    $this->_buildTree($current->getChild(), $id, $tiers);
                 }
             }
         }
+    }
+
+    public function buildTable(): TierTable
+    {
+        if (!$this->isLoaded()) {
+            throw new \LogicException("no data loaded");
+        }
+        $table = new TierTable();
+        foreach ($this->raw as $line) {
+            list($id, $tiers) = explode(' - ', $line, 2);
+            $line = new TierLine();
+            foreach (explode(' > ', trim($tiers)) as $tier) {
+                $line->append(new Tier($id, $tier));
+            }
+            $table->append($line);
+        }
+        return $table;
     }
 }

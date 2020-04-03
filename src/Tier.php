@@ -28,8 +28,11 @@ class Tier
         return $id === $this->id;
     }
 
-    public function isSame(string $name): bool
+    public function isSame(string $name, $caseInsensitive = false): bool
     {
+        if ($caseInsensitive) {
+            return strtolower($name) === strtolower($this->name);
+        }
         return $name === $this->name;
     }
 

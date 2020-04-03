@@ -1,2 +1,2 @@
 # GoogleTaxonomyHandler
-An OO Lib to Handle Google Taxonomy
+An OO Kit to Handle Google Taxonomy
