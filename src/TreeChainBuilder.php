@@ -1,14 +1,13 @@
 <?php
 namespace GoogleTaxonomyHandler;
-require 'Tier.php';
 
-class TreeChainFactory
+class TreeChainBuilder
 {
     private $loaded = false;
 
     protected $raw = [];
 
-    public function load(array $raw): TreeChainFactory
+    public function load(array $raw): TreeChainBuilder
     {
         $this->raw = $raw;
         $this->loaded = true;
@@ -16,7 +15,7 @@ class TreeChainFactory
         return $this;
     }
 
-    public function loadFromFile(string $file): TreeChainFactory
+    public function loadFromFile(string $file): TreeChainBuilder
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException("file: {$file} was not found");
@@ -71,7 +70,3 @@ class TreeChainFactory
         }
     }
 }
-
-$a = new TreeChainFactory();
-$b = $a->loadFromFile('../taxonomy-with-ids.en-US-20190710.txt')->build();
-print_r($b->find(3391)->toArray());

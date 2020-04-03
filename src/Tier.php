@@ -145,12 +145,12 @@ class Tier
         return null;
     }
 
-    public function toArray(): array
+    public function toArray(bool $isResolve = false): array
     {
-        return $this->_toArray($this);
+        return $this->_toArray($this, $isResolve);
     }
 
-    private function _toArray(Tier $tier): array
+    private function _toArray(Tier $tier, bool $isResolve): array
     {
         $results = [];
         ADD:
@@ -158,8 +158,11 @@ class Tier
             'id' => $tier->getId(),
             'name' => $tier->getName(),
         ];
+        if ($isResolve) {
+            $item['resolved'] = $tier->resolve();
+        }
         if ($tier->hasChild()) {
-            $item['child'] = $this->_toArray($tier->getChild());
+            $item['child'] = $this->_toArray($tier->getChild(), $isResolve);
         }
         $results[] = $item;
         if ($tier->hasNext()) {

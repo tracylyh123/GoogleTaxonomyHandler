@@ -1,2 +1,2 @@
 # GoogleTaxonomyHandler
-A Class to Handle Google Taxonomy
+An OO Lib to Handle Google Taxonomy
