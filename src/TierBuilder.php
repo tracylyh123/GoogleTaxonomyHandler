@@ -5,7 +5,7 @@ class TierBuilder
 {
     private $loaded = false;
 
-    protected $raw = [];
+    private $raw = [];
 
     public function load(array $raw): TierBuilder
     {
