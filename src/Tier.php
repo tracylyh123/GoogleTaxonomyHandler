@@ -119,20 +119,53 @@ class Tier
 
     public function find(int $id): ?Tier
     {
-        return $this->findById($id, $this);
+        return $this->_find($id, $this);
     }
 
-    private function findById(int $id, Tier $tier): ?Tier
+    private function _find(int $id, Tier $tier): ?Tier
     {
         if ($tier->isEqual($id)) {
             return $tier;
         }
-        if ($tier->hasChild()) {
-            return $this->findById($id, $tier->getChild());
-        }
+
         if ($tier->hasNext()) {
-            return $this->findById($id, $tier->getNext());
+            $next = $this->_find($id, $tier->getNext());
+            if ($next) {
+                return $next;
+            }
         }
+
+        if ($tier->hasChild()) {
+            $child = $this->_find($id, $tier->getChild());
+            if ($child) {
+                return $child;
+            }
+        }
+
         return null;
+    }
+
+    public function toArray(): array
+    {
+        return $this->_toArray($this);
+    }
+
+    private function _toArray(Tier $tier): array
+    {
+        $results = [];
+        ADD:
+        $item = [
+            'id' => $tier->getId(),
+            'name' => $tier->getName(),
+        ];
+        if ($tier->hasChild()) {
+            $item['child'] = $this->_toArray($tier->getChild());
+        }
+        $results[] = $item;
+        if ($tier->hasNext()) {
+            $tier = $tier->getNext();
+            goto ADD;
+        }
+        return $results;
     }
 }
