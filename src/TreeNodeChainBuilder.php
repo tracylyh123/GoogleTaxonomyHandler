@@ -1,13 +1,13 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TreeChainBuilder
+class TreeNodeChainBuilder
 {
     private $loaded = false;
 
     protected $raw = [];
 
-    public function load(array $raw): TreeChainBuilder
+    public function load(array $raw): TreeNodeChainBuilder
     {
         $this->raw = $raw;
         $this->loaded = true;
@@ -15,7 +15,7 @@ class TreeChainBuilder
         return $this;
     }
 
-    public function loadFromFile(string $file): TreeChainBuilder
+    public function loadFromFile(string $file): TreeNodeChainBuilder
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException("file: {$file} was not found");
@@ -31,12 +31,12 @@ class TreeChainBuilder
         return $this->loaded;
     }
 
-    public function build(): Tier
+    public function build(): TreeNode
     {
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
         }
-        $result = new Tier(0, '');
+        $result = new TreeNode(0, '');
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
             $this->_build($result, $id, explode(' > ', trim($tiers)));
@@ -44,7 +44,7 @@ class TreeChainBuilder
         return $result->getChild();
     }
 
-    private function _build(Tier $result, int $id, array $tiers)
+    private function _build(TreeNode $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
             $current = $result;
@@ -58,11 +58,11 @@ class TreeChainBuilder
                         $current = $current->getNext();
                         goto NEXT;
                     } else {
-                        $current->setNext(new Tier($id, $tier));
+                        $current->setNext(new TreeNode($id, $tier));
                     }
                 }
             } else {
-                $current->setChild(new Tier($id, $tier));
+                $current->setChild(new TreeNode($id, $tier));
                 if ($tiers) {
                     $this->_build($current->getChild(), $id, $tiers);
                 }

@@ -7,10 +7,6 @@ class Tier
 
     private $name;
 
-    private $next;
-
-    private $child;
-
     public function __construct(int $id, string $name)
     {
         $this->id = $id;
@@ -35,38 +31,6 @@ class Tier
     public function isSame(string $name): bool
     {
         return $name === $this->name;
-    }
-
-    public function setNext(Tier $tier): Tier
-    {
-        $this->next = $tier;
-        return $this;
-    }
-
-    public function getNext(): Tier
-    {
-        return $this->next;
-    }
-
-    public function setChild(Tier $tier): Tier
-    {
-        $this->child = $tier;
-        return $this;
-    }
-
-    public function getChild(): Tier
-    {
-        return $this->child;
-    }
-
-    public function hasChild(): bool
-    {
-        return !empty($this->child);
-    }
-
-    public function hasNext(): bool
-    {
-        return !empty($this->next);
     }
 
     public function resolve(): array
@@ -115,60 +79,5 @@ class Tier
         } else {
             $result[] = implode(' ', $parsed);
         }
-    }
-
-    public function find(int $id): ?Tier
-    {
-        return $this->_find($id, $this);
-    }
-
-    private function _find(int $id, Tier $tier): ?Tier
-    {
-        if ($tier->isEqual($id)) {
-            return $tier;
-        }
-
-        if ($tier->hasNext()) {
-            $next = $this->_find($id, $tier->getNext());
-            if ($next) {
-                return $next;
-            }
-        }
-
-        if ($tier->hasChild()) {
-            $child = $this->_find($id, $tier->getChild());
-            if ($child) {
-                return $child;
-            }
-        }
-
-        return null;
-    }
-
-    public function toArray(bool $isResolve = false): array
-    {
-        return $this->_toArray($this, $isResolve);
-    }
-
-    private function _toArray(Tier $tier, bool $isResolve): array
-    {
-        $results = [];
-        ADD:
-        $item = [
-            'id' => $tier->getId(),
-            'name' => $tier->getName(),
-        ];
-        if ($isResolve) {
-            $item['resolved'] = $tier->resolve();
-        }
-        if ($tier->hasChild()) {
-            $item['child'] = $this->_toArray($tier->getChild(), $isResolve);
-        }
-        $results[] = $item;
-        if ($tier->hasNext()) {
-            $tier = $tier->getNext();
-            goto ADD;
-        }
-        return $results;
     }
 }
