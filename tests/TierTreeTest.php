@@ -58,6 +58,16 @@ class TierTreeTest extends TestCase
         ]);
         $tree = $builder->buildTree();
 
-
+        $array = $tree->toArray();
+        $this->assertIsArray($array);
+        $this->assertEquals(2, count($array));
+        $this->assertEquals('Animals & Pet Supplies', $array[0]['name']);
+        $this->assertArrayHasKey('childs', $array[0]);
+        $this->assertEquals(2, count($array[0]['childs']));
+        $this->assertEquals('Live Animals', $array[0]['childs'][0]['name']);
+        $this->assertEquals('Pet Supplies', $array[0]['childs'][1]['name']);
+        $this->assertArrayHasKey('childs', $array[0]['childs'][1]);
+        $this->assertEquals(1, count($array[0]['childs'][1]['childs']));
+        $this->assertEquals('Bird Supplies', $array[0]['childs'][1]['childs'][0]['name']);
     }
 }

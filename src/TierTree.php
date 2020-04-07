@@ -84,7 +84,7 @@ class TierTree extends Tier
             $item['resolved'] = $tier->resolve();
         }
         if ($tier->hasChild()) {
-            $item['child'] = $this->_toArray($tier->getChild(), $isResolve);
+            $item['childs'] = $this->_toArray($tier->getChild(), $isResolve);
         }
         $results[] = $item;
         if ($tier->hasNext()) {
