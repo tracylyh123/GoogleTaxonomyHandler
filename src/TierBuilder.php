@@ -80,7 +80,7 @@ class TierBuilder
             list($id, $tiers) = explode(' - ', $line, 2);
             $line = new TierLine($id);
             foreach (explode(' > ', trim($tiers)) as $tier) {
-                $line->append(new Tier($id, $tier));
+                $line->append(new Node($id, $tier));
             }
             $table->append($line);
         }

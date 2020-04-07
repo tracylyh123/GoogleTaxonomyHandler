@@ -1,7 +1,7 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class Tier
+class Node
 {
     private $id;
 

@@ -65,21 +65,21 @@ class TierTable implements \IteratorAggregate, \ArrayAccess
             $score = 0;
             $matched = [];
             /**
-             * @var $tier Tier
+             * @var $node Node
              */
-            foreach ($line as $offset => $tier) {
+            foreach ($line as $offset => $node) {
                 foreach ($splited as $index => $item) {
                     if (in_array($index, $matched)) {
                         continue;
                     }
                     $bias = 1 + $offset;
-                    if ($tier->isSame($item, true)) {
+                    if ($node->isSame($item, true)) {
                         $matched[] = $index;
                         $score += ($base / $bias);
                         continue;
                     }
                     $len1 = strlen($item);
-                    foreach ($tier->resolve() as $gitem) {
+                    foreach ($node->resolve() as $gitem) {
                         $result = preg_match('/\b' . preg_quote($gitem, '/') . '\b/i', $item, $matches, PREG_OFFSET_CAPTURE);
                         if ($result < 1) {
                             continue;

@@ -1,7 +1,7 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TreeNode extends Tier
+class TreeNode extends Node
 {
     private $next;
 

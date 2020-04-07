@@ -1,7 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: defy
- * Date: 4/7/20
- * Time: 11:30 AM
- */
+namespace Tests;
+
+use PHPUnit\Framework\TestCase;
+
+class TreeNodeTest extends TestCase
+{
+
+}
