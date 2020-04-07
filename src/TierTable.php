@@ -1,14 +1,48 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TierTable implements \IteratorAggregate
+class TierTable implements \IteratorAggregate, \ArrayAccess
 {
     private $tiers = [];
 
     public function append(TierLine $line): TierTable
     {
-        $this->tiers[] = $line;
+        $this->tiers[$line->getId()] = $line;
         return $this;
+    }
+
+    /**
+     * @param int $offset
+     * @param TierLine $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (!$value instanceof TierLine) {
+            throw new \InvalidArgumentException('invalid type of value');
+        }
+        if ($offset !== $value->getId()) {
+            throw new \InvalidArgumentException('invalid offset value');
+        }
+        $this->tiers[$value->getId()] = $value;
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return isset($this->tiers[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->tiers[$offset]);
+    }
+
+    /**
+     * @param int $offset
+     * @return TierLine|null
+     */
+    public function offsetGet($offset)
+    {
+        return $this->tiers[$offset] ?? null;
     }
 
     public function getIterator(): \ArrayIterator
