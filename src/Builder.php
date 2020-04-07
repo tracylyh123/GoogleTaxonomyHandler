@@ -1,13 +1,13 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TierBuilder
+class Builder
 {
     private $loaded = false;
 
     private $raw = [];
 
-    public function load(array $raw): TierBuilder
+    public function load(array $raw): Builder
     {
         $this->raw = $raw;
         $this->loaded = true;
@@ -15,7 +15,7 @@ class TierBuilder
         return $this;
     }
 
-    public function loadFromFile(string $file): TierBuilder
+    public function loadFromFile(string $file): Builder
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException("file: {$file} was not found");
@@ -31,12 +31,12 @@ class TierBuilder
         return $this->loaded;
     }
 
-    public function buildTree(): TierTree
+    public function buildTree(): Tree
     {
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
         }
-        $result = new TierTree(0, '');
+        $result = new Tree(0, '');
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
             $this->_buildTree($result, $id, explode(' > ', trim($tiers)));
@@ -44,7 +44,7 @@ class TierBuilder
         return $result->getChild();
     }
 
-    private function _buildTree(TierTree $result, int $id, array $tiers)
+    private function _buildTree(Tree $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
             $current = $result;
@@ -58,11 +58,11 @@ class TierBuilder
                         $current = $current->getNext();
                         goto NEXT;
                     } else {
-                        $current->setNext(new TierTree($id, $tier));
+                        $current->setNext(new Tree($id, $tier));
                     }
                 }
             } else {
-                $current->setChild(new TierTree($id, $tier));
+                $current->setChild(new Tree($id, $tier));
                 if ($tiers) {
                     $this->_buildTree($current->getChild(), $id, $tiers);
                 }
@@ -70,17 +70,17 @@ class TierBuilder
         }
     }
 
-    public function buildTable(): TierTable
+    public function buildTable(): Table
     {
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
         }
-        $table = new TierTable();
+        $table = new Table();
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
-            $line = new TierLine($id);
+            $line = new Line($id);
             foreach (explode(' > ', trim($tiers)) as $tier) {
-                $line->append(new Tier($id, $tier));
+                $line->append(new Node($tier));
             }
             $table->append($line);
         }

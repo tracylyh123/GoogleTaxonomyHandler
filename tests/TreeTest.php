@@ -1,14 +1,14 @@
 <?php
 namespace Tests;
 
-use GoogleTaxonomyHandler\TierBuilder;
+use GoogleTaxonomyHandler\Builder;
 use PHPUnit\Framework\TestCase;
 
-class TierTreeTest extends TestCase
+class TreeTest extends TestCase
 {
     public function testFind()
     {
-        $builder = new TierBuilder();
+        $builder = new Builder();
         $builder->load([
             '1 - Animals & Pet Supplies',
             '3237 - Animals & Pet Supplies > Live Animals',
@@ -45,7 +45,7 @@ class TierTreeTest extends TestCase
 
     public function testToArray()
     {
-        $builder = new TierBuilder();
+        $builder = new Builder();
         $builder->load([
             '1 - Animals & Pet Supplies',
             '3237 - Animals & Pet Supplies > Live Animals',
@@ -61,7 +61,7 @@ class TierTreeTest extends TestCase
         $array = $tree->toArray();
         $this->assertIsArray($array);
         $this->assertEquals(2, count($array));
-        $this->assertEquals('1', $array[0]['id']);
+        $this->assertEquals(1, $array[0]['id']);
         $this->assertArrayHasKey('childs', $array[0]);
         $this->assertEquals(2, count($array[0]['childs']));
         $this->assertEquals(3237, $array[0]['childs'][0]['id']);

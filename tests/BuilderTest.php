@@ -1,16 +1,16 @@
 <?php
 namespace Tests;
 
-use GoogleTaxonomyHandler\TierBuilder;
-use GoogleTaxonomyHandler\TierTable;
-use GoogleTaxonomyHandler\TierTree;
+use GoogleTaxonomyHandler\Builder;
+use GoogleTaxonomyHandler\Table;
+use GoogleTaxonomyHandler\Tree;
 use PHPUnit\Framework\TestCase;
 
-class TierBuilderTest extends TestCase
+class BuilderTest extends TestCase
 {
     public function testBuildTree()
     {
-        $builder = new TierBuilder();
+        $builder = new Builder();
         $builder->load([
             '1 - Animals & Pet Supplies',
             '3237 - Animals & Pet Supplies > Live Animals',
@@ -23,7 +23,7 @@ class TierBuilderTest extends TestCase
         ]);
         $tree = $builder->buildTree();
 
-        $this->assertTrue($tree instanceof TierTree);
+        $this->assertTrue($tree instanceof Tree);
 
         $this->assertEquals(1, $tree->getId());
         $this->assertTrue($tree->hasChild());
@@ -60,7 +60,7 @@ class TierBuilderTest extends TestCase
 
     public function testBuildTable()
     {
-        $builder = new TierBuilder();
+        $builder = new Builder();
         $builder->load([
             '1 - Animals & Pet Supplies',
             '3237 - Animals & Pet Supplies > Live Animals',
@@ -73,7 +73,7 @@ class TierBuilderTest extends TestCase
         ]);
         $table = $builder->buildTable();
 
-        $this->assertTrue($table instanceof TierTable);
+        $this->assertTrue($table instanceof Table);
 
         $this->assertEquals(1, $table[1]->getId());
         $this->assertTrue($table[1][0]->isSame('Animals & Pet Supplies'));

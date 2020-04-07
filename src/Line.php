@@ -1,7 +1,7 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TierLine implements \IteratorAggregate, \ArrayAccess
+class Line implements \IteratorAggregate, \ArrayAccess
 {
     private $line = [];
 
@@ -19,7 +19,7 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return Tier
+     * @return Node
      */
     public function offsetGet($offset)
     {
@@ -28,14 +28,14 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @param Tier $value
+     * @param Node $node
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $node)
     {
         if (isset($offset)) {
-            $this->line[$offset] = $value;
+            $this->line[$offset] = $node;
         } else {
-            $this->line[] = $value;
+            $this->line[] = $node;
         }
     }
 
@@ -49,11 +49,8 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
         unset($this->line[$offset]);
     }
 
-    public function append(Tier $node): TierLine
+    public function append(Node $node): Line
     {
-        if (!$node->isEqual($this->id)) {
-            throw new \InvalidArgumentException("id: {$node->getId()} should be {$this->id}");
-        }
         $this->line[] = $node;
         return $this;
     }

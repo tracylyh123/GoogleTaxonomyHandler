@@ -1,53 +1,53 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TierTable implements \IteratorAggregate, \ArrayAccess
+class Table implements \IteratorAggregate, \ArrayAccess
 {
-    private $tiers = [];
+    private $lines = [];
 
-    public function append(TierLine $line): TierTable
+    public function append(Line $line): Table
     {
-        $this->tiers[$line->getId()] = $line;
+        $this->lines[$line->getId()] = $line;
         return $this;
     }
 
     /**
      * @param int $offset
-     * @param TierLine $value
+     * @param Line $line
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $line)
     {
-        if (!$value instanceof TierLine) {
+        if (!$line instanceof Line) {
             throw new \InvalidArgumentException('invalid type of value');
         }
-        if ($offset !== $value->getId()) {
+        if ($offset !== $line->getId()) {
             throw new \InvalidArgumentException('invalid offset value');
         }
-        $this->tiers[$value->getId()] = $value;
+        $this->lines[$line->getId()] = $line;
     }
 
     public function offsetExists($offset): bool
     {
-        return isset($this->tiers[$offset]);
+        return isset($this->lines[$offset]);
     }
 
     public function offsetUnset($offset)
     {
-        unset($this->tiers[$offset]);
+        unset($this->lines[$offset]);
     }
 
     /**
      * @param int $offset
-     * @return TierLine|null
+     * @return Line|null
      */
     public function offsetGet($offset)
     {
-        return $this->tiers[$offset] ?? null;
+        return $this->lines[$offset] ?? null;
     }
 
     public function getIterator(): \ArrayIterator
     {
-        return new \ArrayIterator($this->tiers);
+        return new \ArrayIterator($this->lines);
     }
 
     public function match(string $string, string $delimiter): int
@@ -61,25 +61,25 @@ class TierTable implements \IteratorAggregate, \ArrayAccess
         // rule 1: the higher tier in Google Taxonomy has higher score
         // rule 2: each word can only be matched once
         // rule 3: if one tier can fully matched, it will get higer score than just matched a part
-        foreach ($this->tiers as $id => $line) {
+        foreach ($this->lines as $id => $line) {
             $score = 0;
             $matched = [];
             /**
-             * @var $tier Tier
+             * @var $node Node
              */
-            foreach ($line as $offset => $tier) {
+            foreach ($line as $offset => $node) {
                 foreach ($splited as $index => $item) {
                     if (in_array($index, $matched)) {
                         continue;
                     }
                     $bias = 1 + $offset;
-                    if ($tier->isSame($item, true)) {
+                    if ($node->isSame($item, true)) {
                         $matched[] = $index;
                         $score += ($base / $bias);
                         continue;
                     }
                     $len1 = strlen($item);
-                    foreach ($tier->resolve() as $gitem) {
+                    foreach ($node->resolve() as $gitem) {
                         $result = preg_match('/\b' . preg_quote($gitem, '/') . '\b/i', $item, $matches, PREG_OFFSET_CAPTURE);
                         if ($result < 1) {
                             continue;
