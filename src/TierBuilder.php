@@ -31,12 +31,12 @@ class TierBuilder
         return $this->loaded;
     }
 
-    public function buildTree(): TreeNode
+    public function buildTree(): TierTree
     {
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
         }
-        $result = new TreeNode(0, '');
+        $result = new TierTree(0, '');
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
             $this->_buildTree($result, $id, explode(' > ', trim($tiers)));
@@ -44,7 +44,7 @@ class TierBuilder
         return $result->getChild();
     }
 
-    private function _buildTree(TreeNode $result, int $id, array $tiers)
+    private function _buildTree(TierTree $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
             $current = $result;
@@ -58,11 +58,11 @@ class TierBuilder
                         $current = $current->getNext();
                         goto NEXT;
                     } else {
-                        $current->setNext(new TreeNode($id, $tier));
+                        $current->setNext(new TierTree($id, $tier));
                     }
                 }
             } else {
-                $current->setChild(new TreeNode($id, $tier));
+                $current->setChild(new TierTree($id, $tier));
                 if ($tiers) {
                     $this->_buildTree($current->getChild(), $id, $tiers);
                 }
@@ -80,7 +80,7 @@ class TierBuilder
             list($id, $tiers) = explode(' - ', $line, 2);
             $line = new TierLine($id);
             foreach (explode(' > ', trim($tiers)) as $tier) {
-                $line->append(new Node($id, $tier));
+                $line->append(new Tier($id, $tier));
             }
             $table->append($line);
         }

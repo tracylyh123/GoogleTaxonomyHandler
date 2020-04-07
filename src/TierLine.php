@@ -19,7 +19,7 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return Node
+     * @return Tier
      */
     public function offsetGet($offset)
     {
@@ -28,7 +28,7 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @param Node $value
+     * @param Tier $value
      */
     public function offsetSet($offset, $value)
     {
@@ -49,7 +49,7 @@ class TierLine implements \IteratorAggregate, \ArrayAccess
         unset($this->line[$offset]);
     }
 
-    public function append(Node $node): TierLine
+    public function append(Tier $node): TierLine
     {
         if (!$node->isEqual($this->id)) {
             throw new \InvalidArgumentException("id: {$node->getId()} should be {$this->id}");

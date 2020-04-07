@@ -3,7 +3,7 @@ namespace Tests;
 
 use GoogleTaxonomyHandler\TierBuilder;
 use GoogleTaxonomyHandler\TierTable;
-use GoogleTaxonomyHandler\TreeNode;
+use GoogleTaxonomyHandler\TierTree;
 use PHPUnit\Framework\TestCase;
 
 class TierBuilderTest extends TestCase
@@ -23,7 +23,7 @@ class TierBuilderTest extends TestCase
         ]);
         $tree = $builder->buildTree();
 
-        $this->assertTrue($tree instanceof TreeNode);
+        $this->assertTrue($tree instanceof TierTree);
 
         $this->assertEquals(1, $tree->getId());
         $this->assertTrue($tree->hasChild());

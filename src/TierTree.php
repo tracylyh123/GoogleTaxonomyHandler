@@ -1,30 +1,30 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class TreeNode extends Node
+class TierTree extends Tier
 {
     private $next;
 
     private $child;
 
-    public function setNext(TreeNode $tier): TreeNode
+    public function setNext(TierTree $tier): TierTree
     {
         $this->next = $tier;
         return $this;
     }
 
-    public function getNext(): TreeNode
+    public function getNext(): TierTree
     {
         return $this->next;
     }
 
-    public function setChild(TreeNode $tier): TreeNode
+    public function setChild(TierTree $tier): TierTree
     {
         $this->child = $tier;
         return $this;
     }
 
-    public function getChild(): TreeNode
+    public function getChild(): TierTree
     {
         return $this->child;
     }
@@ -39,12 +39,12 @@ class TreeNode extends Node
         return !empty($this->next);
     }
 
-    public function find(int $id): ?TreeNode
+    public function find(int $id): ?TierTree
     {
         return $this->_find($id, $this);
     }
 
-    private function _find(int $id, TreeNode $tier): ?TreeNode
+    private function _find(int $id, TierTree $tier): ?TierTree
     {
         if ($tier->isEqual($id)) {
             return $tier;
@@ -72,7 +72,7 @@ class TreeNode extends Node
         return $this->_toArray($this, $isResolve);
     }
 
-    private function _toArray(TreeNode $tier, bool $isResolve): array
+    private function _toArray(TierTree $tier, bool $isResolve): array
     {
         $results = [];
         ADD:
