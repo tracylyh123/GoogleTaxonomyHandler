@@ -51,7 +51,7 @@ class Line implements \IteratorAggregate, \ArrayAccess
 
     public function append(Node $node): Line
     {
-        $this->line[] = $node;
+        $this->offsetSet(null, $node);
         return $this;
     }
 

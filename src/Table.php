@@ -7,7 +7,7 @@ class Table implements \IteratorAggregate, \ArrayAccess
 
     public function append(Line $line): Table
     {
-        $this->lines[$line->getId()] = $line;
+        $this->offsetSet($line->getId(), $line);
         return $this;
     }
 
