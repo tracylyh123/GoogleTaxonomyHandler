@@ -7,6 +7,8 @@ class Tree extends Node
 
     private $next;
 
+    private $last;
+
     private $child;
 
     private $parent;
@@ -33,6 +35,7 @@ class Tree extends Node
             $tree->setParent($this->getParent());
         }
         $this->next = $tree;
+        $tree->setLast($this);
         return $this;
     }
 
@@ -64,6 +67,17 @@ class Tree extends Node
         return $this->parent;
     }
 
+    public function setLast(Tree $tree): Tree
+    {
+        $this->last = $tree;
+        return $this;
+    }
+
+    public function getLast(): Tree
+    {
+        return $this->last;
+    }
+
     public function hasChild(): bool
     {
         return !empty($this->child);
@@ -77,6 +91,11 @@ class Tree extends Node
     public function hasParent(): bool
     {
         return !empty($this->parent);
+    }
+
+    public function hasLast(): bool
+    {
+        return !empty($this->last);
     }
 
     public function find(int $id): ?Tree
