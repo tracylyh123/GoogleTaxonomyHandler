@@ -9,6 +9,8 @@ class Tree extends Node
 
     private $child;
 
+    private $parent;
+
     public function __construct(int $id, string $name)
     {
         parent::__construct($name);
@@ -27,6 +29,9 @@ class Tree extends Node
 
     public function setNext(Tree $tree): Tree
     {
+        if ($this->hasParent()) {
+            $tree->setParent($this->getParent());
+        }
         $this->next = $tree;
         return $this;
     }
@@ -39,12 +44,24 @@ class Tree extends Node
     public function setChild(Tree $tree): Tree
     {
         $this->child = $tree;
+        $tree->setParent($this);
         return $this;
     }
 
     public function getChild(): Tree
     {
         return $this->child;
+    }
+
+    public function setParent(Tree $tree): Tree
+    {
+        $this->parent = $tree;
+        return $this;
+    }
+
+    public function getParent(): Tree
+    {
+        return $this->parent;
     }
 
     public function hasChild(): bool
@@ -55,6 +72,11 @@ class Tree extends Node
     public function hasNext(): bool
     {
         return !empty($this->next);
+    }
+
+    public function hasParent(): bool
+    {
+        return !empty($this->parent);
     }
 
     public function find(int $id): ?Tree
@@ -98,6 +120,9 @@ class Tree extends Node
             'id' => $tree->getId(),
             'name' => $tree->getName(),
         ];
+        if ($tree->hasParent()) {
+            $item['parent_id'] = $tree->getParent()->getId();
+        }
         if ($isResolve) {
             $item['resolved'] = $tree->resolve();
         }
@@ -110,5 +135,13 @@ class Tree extends Node
             goto ADD;
         }
         return $results;
+    }
+
+    public function prune(int $id)
+    {
+//        $tree = $this->find($id);
+//        if ($tree) {
+//            $tree->getParent()->has;
+//        }
     }
 }
