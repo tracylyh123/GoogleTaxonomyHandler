@@ -85,11 +85,19 @@ class TreeTest extends TestCase
             '5697 - Apparel & Accessories > Clothing > Activewear > Bicycle Activewear',
         ]);
         $tree = $builder->buildTree();
+
+        $tree->find(2)->prune();
+        $this->assertEquals(3237, $tree->getChild()->getChild()->getId());
+        $this->assertFalse($tree->getChild()->getChild()->hasNext());
+
         $tree->find(1)->prune();
         $this->assertEquals(166, $tree->getChild()->getId());
 
         $tree->find(5322)->prune();
         $this->assertEquals(1604, $tree->getChild()->getChild()->getId());
         $this->assertFalse($tree->getChild()->getChild()->hasChild());
+
+        $this->expectException(\LogicException::class);
+        $tree->find(0)->prune();
     }
 }
