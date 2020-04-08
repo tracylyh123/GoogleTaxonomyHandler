@@ -5,7 +5,7 @@ class Line implements \IteratorAggregate, \ArrayAccess
 {
     private $line = [];
 
-    protected $id;
+    private $id;
 
     public function __construct(int $id)
     {

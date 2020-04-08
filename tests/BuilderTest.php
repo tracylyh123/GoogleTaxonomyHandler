@@ -21,7 +21,7 @@ class BuilderTest extends TestCase
             '5322 - Apparel & Accessories > Clothing > Activewear',
             '5697 - Apparel & Accessories > Clothing > Activewear > Bicycle Activewear',
         ]);
-        $tree = $builder->buildTree();
+        $tree = $builder->buildTree()->getChild();
 
         $this->assertTrue($tree instanceof Tree);
 

@@ -13,6 +13,8 @@ class Tree extends Node
 
     private $parent;
 
+    private $isPruned = false;
+
     public function __construct(int $id, string $name)
     {
         parent::__construct($name);
@@ -24,18 +26,14 @@ class Tree extends Node
         return $this->id;
     }
 
-    public function isEqual(int $id): bool
+    public function isEqual(Tree $tree): bool
     {
-        return $id === $this->id;
+        return $tree->getId() === $this->id;
     }
 
     public function setNext(Tree $tree): Tree
     {
-        if ($this->hasParent()) {
-            $tree->setParent($this->getParent());
-        }
         $this->next = $tree;
-        $tree->setLast($this);
         return $this;
     }
 
@@ -47,7 +45,6 @@ class Tree extends Node
     public function setChild(Tree $tree): Tree
     {
         $this->child = $tree;
-        $tree->setParent($this);
         return $this;
     }
 
@@ -100,12 +97,15 @@ class Tree extends Node
 
     public function find(int $id): ?Tree
     {
+        if ($this->isPruned()) {
+            throw new \LogicException('node already been pruned');
+        }
         return $this->_find($id, $this);
     }
 
     private function _find(int $id, Tree $tree): ?Tree
     {
-        if ($tree->isEqual($id)) {
+        if ($tree->getId() === $id) {
             return $tree;
         }
 
@@ -156,11 +156,73 @@ class Tree extends Node
         return $results;
     }
 
-    public function prune(int $id)
+    private function clearChild(): Tree
     {
-//        $tree = $this->find($id);
-//        if ($tree) {
-//            $tree->getParent()->has;
-//        }
+        $this->child = null;
+        return $this;
+    }
+
+    private function clearNext(): Tree
+    {
+        $this->next = null;
+        return $this;
+    }
+
+    private function clearLast(): Tree
+    {
+        $this->last = null;
+        return $this;
+    }
+
+    public function getRoot(): Tree
+    {
+        $root = $this;
+        while ($root->hasParent()) {
+            $root = $root->getParent();
+        }
+        return $root;
+    }
+
+    public function isRoot(): bool
+    {
+        return 0 === $this->getId();
+    }
+
+    public function prune()
+    {
+        if ($this->isRoot()) {
+            throw new \LogicException('root node cannot be pruned');
+        }
+        $parent = $this->getParent();
+        if ($this->isEqual($parent->getChild())) {
+            if ($this->hasNext()) {
+                $next = $this->getNext();
+                $parent->setChild($next);
+                $next->clearLast();
+            } else {
+                $parent->clearChild();
+            }
+        } else {
+            if ($this->hasNext() && $this->hasLast()) {
+                $next = $this->getNext();
+                $last = $this->getLast();
+                $next->setLast($last);
+                $last->setNext($next);
+            } elseif ($this->hasNext()) {
+                $next = $this->getNext();
+                $next->clearLast();
+            } elseif ($this->hasLast()) {
+                $last = $this->getLast();
+                $last->clearNext();
+            } else {
+                throw new \LogicException('cannot delete this node');
+            }
+        }
+        $this->isPruned = true;
+    }
+
+    public function isPruned(): bool
+    {
+        return $this->isPruned;
     }
 }

@@ -19,7 +19,7 @@ class TreeTest extends TestCase
             '5322 - Apparel & Accessories > Clothing > Activewear',
             '5697 - Apparel & Accessories > Clothing > Activewear > Bicycle Activewear',
         ]);
-        $tree = $builder->buildTree();
+        $tree = $builder->buildTree()->getChild();
 
         $node = $tree->find(1);
         $this->assertNotNull($node);
@@ -56,7 +56,7 @@ class TreeTest extends TestCase
             '5322 - Apparel & Accessories > Clothing > Activewear',
             '5697 - Apparel & Accessories > Clothing > Activewear > Bicycle Activewear',
         ]);
-        $tree = $builder->buildTree();
+        $tree = $builder->buildTree()->getChild();
 
         $array = $tree->toArray();
         $this->assertIsArray($array);
@@ -69,5 +69,27 @@ class TreeTest extends TestCase
         $this->assertArrayHasKey('childs', $array[0]['childs'][1]);
         $this->assertEquals(1, count($array[0]['childs'][1]['childs']));
         $this->assertEquals(3, $array[0]['childs'][1]['childs'][0]['id']);
+    }
+
+    public function testPrune()
+    {
+        $builder = new Builder();
+        $builder->load([
+            '1 - Animals & Pet Supplies',
+            '3237 - Animals & Pet Supplies > Live Animals',
+            '2 - Animals & Pet Supplies > Pet Supplies',
+            '3 - Animals & Pet Supplies > Pet Supplies > Bird Supplies',
+            '166 - Apparel & Accessories',
+            '1604 - Apparel & Accessories > Clothing',
+            '5322 - Apparel & Accessories > Clothing > Activewear',
+            '5697 - Apparel & Accessories > Clothing > Activewear > Bicycle Activewear',
+        ]);
+        $tree = $builder->buildTree();
+        $tree->find(1)->prune();
+        $this->assertEquals(166, $tree->getChild()->getId());
+
+        $tree->find(5322)->prune();
+        $this->assertEquals(1604, $tree->getChild()->getChild()->getId());
+        $this->assertFalse($tree->getChild()->getChild()->hasChild());
     }
 }

@@ -36,17 +36,20 @@ class Builder
         if (!$this->isLoaded()) {
             throw new \LogicException("no data loaded");
         }
-        $result = new Tree(0, '');
+        $root = new Tree(0, '');
         foreach ($this->raw as $line) {
             list($id, $tiers) = explode(' - ', $line, 2);
-            $this->_buildTree($result, $id, explode(' > ', trim($tiers)));
+            $this->_buildTree($root, $id, explode(' > ', trim($tiers)));
         }
-        return $result->getChild();
+        return $root;
     }
 
     private function _buildTree(Tree $result, int $id, array $tiers)
     {
         if ($tier = array_shift($tiers)) {
+            /**
+             * @var $current Tree
+             */
             $current = $result;
             if ($current->hasChild()) {
                 $current = $current->getChild();
@@ -58,11 +61,18 @@ class Builder
                         $current = $current->getNext();
                         goto NEXT;
                     } else {
-                        $current->setNext(new Tree($id, $tier));
+                        $next = new Tree($id, $tier);
+                        $next->setLast($current);
+                        if ($current->hasParent()) {
+                            $next->setParent($current->getParent());
+                        }
+                        $current->setNext($next);
                     }
                 }
             } else {
-                $current->setChild(new Tree($id, $tier));
+                $child = new Tree($id, $tier);
+                $child->setParent($current);
+                $current->setChild($child);
                 if ($tiers) {
                     $this->_buildTree($current->getChild(), $id, $tiers);
                 }
