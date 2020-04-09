@@ -59,7 +59,7 @@ class Table implements \IteratorAggregate, \ArrayAccess
 
         // start computing
         $base = 100;
-        $resultId = 0;
+        $resultId = -1;
         $maxScore = 0;
         // rule 1: the higher tier in Google Taxonomy has higher score
         // rule 2: each word can only be matched once

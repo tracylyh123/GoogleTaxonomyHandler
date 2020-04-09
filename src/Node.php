@@ -25,14 +25,20 @@ class Node implements InterfaceNode
 
     public function resolve(): array
     {
-        if (false !== strpos($this->name, ', ')) {
-            return explode(', ', str_replace(' & ', ', ', $this->name));
-        } elseif (false !== strpos($this->name, ' & ') || false !== strpos($this->name, ' and ')) {
-            $result = [];
-            $this->combine($this->parse($this->name), $result);
-            return $result;
+        static $cache = [];
+        if (!isset($cache[$this->name])) {
+            if (false !== strpos($this->name, ', ')) {
+                $return = explode(', ', str_replace(' & ', ', ', $this->name));
+            } elseif (false !== strpos($this->name, ' & ') || false !== strpos($this->name, ' and ')) {
+                $result = [];
+                $this->combine($this->parse($this->name), $result);
+                $return = $result;
+            } else {
+                $return = [$this->name];
+            }
+            $cache[$this->name] = $return;
         }
-        return [$this->name];
+        return $cache[$this->name];
     }
 
     private function parse(string $name): array
