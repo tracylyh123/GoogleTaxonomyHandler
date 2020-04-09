@@ -1,7 +1,7 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class Tree extends Node
+class Tree extends Node implements InterfaceTree
 {
     private $id;
 
@@ -19,6 +19,10 @@ class Tree extends Node
     {
         parent::__construct($name);
         $this->id = $id;
+        $this->next = new NilTree();
+        $this->last = new NilTree();
+        $this->child = new NilTree();
+        $this->parent = new NilTree();
     }
 
     public function getId(): int
@@ -26,76 +30,76 @@ class Tree extends Node
         return $this->id;
     }
 
-    public function isEqual(Tree $tree): bool
+    public function isEqual(InterfaceTree $tree): bool
     {
         return $tree->getId() === $this->id;
     }
 
-    public function setNext(Tree $tree): Tree
+    public function setNext(InterfaceTree $tree): InterfaceTree
     {
         $this->next = $tree;
         return $this;
     }
 
-    public function getNext(): Tree
+    public function getNext(): InterfaceTree
     {
         return $this->next;
     }
 
-    public function setChild(Tree $tree): Tree
+    public function setChild(InterfaceTree $tree): InterfaceTree
     {
         $this->child = $tree;
         return $this;
     }
 
-    public function getChild(): Tree
+    public function getChild(): InterfaceTree
     {
         return $this->child;
     }
 
-    public function setParent(Tree $tree): Tree
+    public function setParent(InterfaceTree $tree): InterfaceTree
     {
         $this->parent = $tree;
         return $this;
     }
 
-    public function getParent(): Tree
+    public function getParent(): InterfaceTree
     {
         return $this->parent;
     }
 
-    public function setLast(Tree $tree): Tree
+    public function setLast(InterfaceTree $tree): InterfaceTree
     {
         $this->last = $tree;
         return $this;
     }
 
-    public function getLast(): Tree
+    public function getLast(): InterfaceTree
     {
         return $this->last;
     }
 
     public function hasChild(): bool
     {
-        return !empty($this->child);
+        return !$this->child->isNil();
     }
 
     public function hasNext(): bool
     {
-        return !empty($this->next);
+        return !$this->next->isNil();
     }
 
     public function hasParent(): bool
     {
-        return !empty($this->parent);
+        return !$this->parent->isNil();
     }
 
     public function hasLast(): bool
     {
-        return !empty($this->last);
+        return !$this->last->isNil();
     }
 
-    public function find(int $id): ?Tree
+    public function find(int $id): InterfaceTree
     {
         if ($this->isPruned()) {
             throw new \LogicException('node already been pruned');
@@ -103,7 +107,7 @@ class Tree extends Node
         return $this->_find($id, $this);
     }
 
-    private function _find(int $id, Tree $tree): ?Tree
+    private function _find(int $id, InterfaceTree $tree): InterfaceTree
     {
         if ($tree->getId() === $id) {
             return $tree;
@@ -111,19 +115,19 @@ class Tree extends Node
 
         if ($tree->hasNext()) {
             $next = $this->_find($id, $tree->getNext());
-            if ($next) {
+            if (!$next->isNil()) {
                 return $next;
             }
         }
 
         if ($tree->hasChild()) {
             $child = $this->_find($id, $tree->getChild());
-            if ($child) {
+            if (!$child->isNil()) {
                 return $child;
             }
         }
 
-        return null;
+        return new NilTree();
     }
 
     public function toArray(bool $isResolve = false): array
@@ -131,7 +135,7 @@ class Tree extends Node
         return $this->_toArray($this, $isResolve);
     }
 
-    private function _toArray(Tree $tree, bool $isResolve): array
+    private function _toArray(InterfaceTree $tree, bool $isResolve): array
     {
         $results = [];
         ADD:
@@ -156,25 +160,25 @@ class Tree extends Node
         return $results;
     }
 
-    private function clearChild(): Tree
+    public function clearChild(): InterfaceTree
     {
-        $this->child = null;
+        $this->child = new NilTree();
         return $this;
     }
 
-    private function clearNext(): Tree
+    public function clearNext(): InterfaceTree
     {
-        $this->next = null;
+        $this->next = new NilTree();
         return $this;
     }
 
-    private function clearLast(): Tree
+    public function clearLast(): InterfaceTree
     {
-        $this->last = null;
+        $this->last = new NilTree();
         return $this;
     }
 
-    public function getRoot(): Tree
+    public function getRoot(): InterfaceTree
     {
         $root = $this;
         while ($root->hasParent()) {

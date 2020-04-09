@@ -1,7 +1,7 @@
 <?php
 namespace GoogleTaxonomyHandler;
 
-class Node
+class Node implements InterfaceNode
 {
     private $name;
 
@@ -69,5 +69,10 @@ class Node
         } else {
             $result[] = implode(' ', $parsed);
         }
+    }
+
+    public function isNil(): bool
+    {
+        return false;
     }
 }

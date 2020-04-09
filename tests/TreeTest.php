@@ -97,6 +97,8 @@ class TreeTest extends TestCase
         $this->assertEquals(1604, $tree->getChild()->getChild()->getId());
         $this->assertFalse($tree->getChild()->getChild()->hasChild());
 
+        $this->assertTrue($tree->find(2)->isNil());
+
         $this->expectException(\LogicException::class);
         $tree->find(0)->prune();
     }

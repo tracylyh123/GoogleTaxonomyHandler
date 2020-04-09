@@ -42,7 +42,10 @@ class Table implements \IteratorAggregate, \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->lines[$offset] ?? null;
+        if (!isset($this->lines[$offset])) {
+            throw new \InvalidArgumentException("offset {$offset} was not found");
+        }
+        return $this->lines[$offset];
     }
 
     public function getIterator(): \ArrayIterator

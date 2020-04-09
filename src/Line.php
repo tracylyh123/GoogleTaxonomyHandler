@@ -19,11 +19,11 @@ class Line implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return Node
+     * @return InterfaceNode
      */
     public function offsetGet($offset)
     {
-        return $this->line[$offset] ?? null;
+        return $this->line[$offset] ?? new NilNode();
     }
 
     /**
