@@ -8,11 +8,6 @@ class NilTree extends NilNode implements InterfaceTree
         throw new \LogicException('cannot operate this node');
     }
 
-    public function isEqual(InterfaceTree $tree): bool
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
     public function setNext(InterfaceTree $tree): InterfaceTree
     {
         throw new \LogicException('cannot operate this node');
@@ -83,37 +78,7 @@ class NilTree extends NilNode implements InterfaceTree
         throw new \LogicException('cannot operate this node');
     }
 
-    public function getRoot(): InterfaceTree
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
-    public function isRoot(): bool
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
     public function prune()
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
-    public function isPruned(): bool
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
-    public function clearChild(): InterfaceTree
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
-    public function clearNext(): InterfaceTree
-    {
-        throw new \LogicException('cannot operate this node');
-    }
-
-    public function clearLast(): InterfaceTree
     {
         throw new \LogicException('cannot operate this node');
     }

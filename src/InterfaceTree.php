@@ -5,8 +5,6 @@ interface InterfaceTree extends InterfaceNode
 {
     function getId(): int;
 
-    function isEqual(InterfaceTree $tree): bool;
-
     function setNext(InterfaceTree $tree): InterfaceTree;
 
     function getNext(): InterfaceTree;
@@ -35,17 +33,5 @@ interface InterfaceTree extends InterfaceNode
 
     function toArray(bool $isResolve = false): array;
 
-    function getRoot(): InterfaceTree;
-
-    function isRoot(): bool;
-
     function prune();
-
-    function isPruned(): bool;
-
-    function clearChild(): InterfaceTree;
-
-    function clearNext(): InterfaceTree;
-
-    function clearLast(): InterfaceTree;
 }

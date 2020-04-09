@@ -107,7 +107,7 @@ class Tree extends Node implements InterfaceTree
         return $this->_find($id, $this);
     }
 
-    private function _find(int $id, InterfaceTree $tree): InterfaceTree
+    private function _find(int $id, Tree $tree): InterfaceTree
     {
         if ($tree->getId() === $id) {
             return $tree;
@@ -135,7 +135,7 @@ class Tree extends Node implements InterfaceTree
         return $this->_toArray($this, $isResolve);
     }
 
-    private function _toArray(InterfaceTree $tree, bool $isResolve): array
+    private function _toArray(Tree $tree, bool $isResolve): array
     {
         $results = [];
         ADD:
@@ -158,24 +158,6 @@ class Tree extends Node implements InterfaceTree
             goto ADD;
         }
         return $results;
-    }
-
-    public function clearChild(): InterfaceTree
-    {
-        $this->child = new NilTree();
-        return $this;
-    }
-
-    public function clearNext(): InterfaceTree
-    {
-        $this->next = new NilTree();
-        return $this;
-    }
-
-    public function clearLast(): InterfaceTree
-    {
-        $this->last = new NilTree();
-        return $this;
     }
 
     public function getRoot(): InterfaceTree
@@ -202,22 +184,22 @@ class Tree extends Node implements InterfaceTree
             if ($this->hasNext()) {
                 $next = $this->getNext();
                 $parent->setChild($next);
-                $next->clearLast();
+                $next->setLast(new NilTree());
             } else {
-                $parent->clearChild();
+                $parent->setChild(new NilTree());
             }
         } else {
             if ($this->hasNext() && $this->hasLast()) {
                 $next = $this->getNext();
                 $last = $this->getLast();
-                $next->setLast($last);
+                $next->setLast(new NilTree());
                 $last->setNext($next);
             } elseif ($this->hasNext()) {
                 $next = $this->getNext();
-                $next->clearLast();
+                $next->setLast(new NilTree());
             } elseif ($this->hasLast()) {
                 $last = $this->getLast();
-                $last->clearNext();
+                $last->setNext(new NilTree());
             } else {
                 throw new \LogicException('cannot delete this node');
             }

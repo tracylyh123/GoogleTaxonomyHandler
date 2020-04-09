@@ -2,6 +2,7 @@
 namespace Tests;
 
 use GoogleTaxonomyHandler\Builder;
+use GoogleTaxonomyHandler\Line;
 use GoogleTaxonomyHandler\Table;
 use GoogleTaxonomyHandler\Tree;
 use PHPUnit\Framework\TestCase;
@@ -75,6 +76,9 @@ class BuilderTest extends TestCase
 
         $this->assertTrue($table instanceof Table);
 
+        /**
+         * @var $table Line[]
+         */
         $this->assertEquals(1, $table[1]->getId());
         $this->assertTrue($table[1][0]->isSame('Animals & Pet Supplies'));
 
