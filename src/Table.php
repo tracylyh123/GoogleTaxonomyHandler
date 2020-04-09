@@ -38,7 +38,7 @@ class Table implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return Line|null
+     * @return Line
      */
     public function offsetGet($offset)
     {
