@@ -72,22 +72,25 @@ class Table implements \IteratorAggregate, \ArrayAccess
              */
             foreach ($line as $offset => $node) {
                 foreach ($splited as $index => $item) {
-                    if (in_array($index, $matched)) {
+                    if (in_array($item, $matched)) {
                         continue;
                     }
                     $bias = 1 + $offset;
                     if ($node->isSame($item, true)) {
-                        $matched[] = $index;
+                        $matched[] = $item;
                         $score += ($base / $bias);
                         continue;
                     }
                     $len1 = strlen($item);
                     foreach ($node->resolve() as $gitem) {
+                        if (in_array($gitem, $matched)) {
+                            continue;
+                        }
                         $result = preg_match('/\b' . preg_quote($gitem, '/') . '\b/i', $item, $matches, PREG_OFFSET_CAPTURE);
                         if ($result < 1) {
                             continue;
                         }
-                        $matched[] = $index;
+                        $matched[] = $gitem;
                         $len2 = strlen($gitem);
                         // loss is the average value of two criterias
                         $loss = 1 - (($len2 + (end($matches)[1] + $len2)) / $len1) / 2;
